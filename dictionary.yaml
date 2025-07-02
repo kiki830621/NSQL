@@ -313,6 +313,27 @@ natural_language_patterns:
     pattern: "find top {N} {dimension} by {metric}"
     transform_to_pattern: "transform [implicit_table] to TopItems as {dimension}, {metric} ordered by {metric} desc limit {N}"
     example: "find top 10 products by revenue"
+  
+  ellipsis_patterns:
+    description: "Word omission patterns in natural language queries"
+    symbol: "(word)"
+    principle: "Words in parentheses can be omitted while preserving meaning"
+    examples:
+      - full: "where (condition is) amount > 100"
+        abbreviated: "where amount > 100"
+      - full: "group (by) customer_region"
+        abbreviated: "group customer_region"
+      - full: "select name (from table)"
+        abbreviated: "select name"
+      - full: "transform sales_data (to results)"
+        abbreviated: "transform sales_data"
+      - full: "order (by) revenue (in) desc (order)"
+        abbreviated: "order revenue desc"
+    use_cases:
+      - "Simplifying verbose natural language queries"
+      - "Creating more concise command syntax"
+      - "Maintaining semantic clarity while reducing verbosity"
+      - "Supporting both formal and casual query styles"
 
 # Temporal execution adjectives
 temporal_adjectives:
