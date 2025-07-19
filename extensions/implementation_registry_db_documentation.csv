@@ -1,0 +1,51 @@
+Phrase ID,Directive,Context,Implementation Code,Description,Parameters,Extension,Added Date,Added By,Status
+DOC001,DOCUMENT,TABLE,"table_info <- dbGetQuery($connection, paste0(""PRAGMA table_info('"", $table_name, ""');""))
+table_doc <- data.frame(
+  Column = table_info$name,
+  Type = table_info$type,
+  NotNull = ifelse(table_info$notnull == 1, 'Yes', 'No'),
+  PrimaryKey = ifelse(table_info$pk > 0, 'Yes', 'No')
+)
+write.csv(table_doc, file.path($output_dir, paste0($table_name, '_documentation.csv')))","Documents a single table's structure","$connection, $table_name, $output_dir",Database Documentation,2025-04-16,Claude,Active
+DOC002,DOCUMENT,DATABASE,"tables <- dbListTables($connection)
+table_docs <- lapply(tables, function(table) {
+  table_info <- dbGetQuery($connection, paste0(""PRAGMA table_info('"", table, ""');""))
+  data.frame(
+    Table = table,
+    Column = table_info$name,
+    Type = table_info$type,
+    NotNull = ifelse(table_info$notnull == 1, 'Yes', 'No'),
+    PrimaryKey = ifelse(table_info$pk > 0, 'Yes', 'No')
+  )
+})
+full_doc <- do.call(rbind, table_docs)
+write.csv(full_doc, file.path($output_dir, 'database_documentation.csv'))","Documents the entire database structure","$connection, $output_dir",Database Documentation,2025-04-16,Claude,Active
+DOC003,DOCUMENT,SCHEMA,"schemas <- dbGetQuery($connection, ""SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"")
+schema_doc <- data.frame(
+  Schema = schemas$name,
+  TableCount = sapply(schemas$name, function(schema) {
+    length(dbListTables($connection, schema))
+  })
+)
+write.csv(schema_doc, file.path($output_dir, 'schema_documentation.csv'))","Documents all schemas in the database","$connection, $output_dir",Database Documentation,2025-04-16,Claude,Active
+DOC004,GENERATE,ER DIAGRAM,"tables <- dbListTables($connection)
+relations <- lapply(tables, function(table) {
+  fks <- dbGetQuery($connection, paste0(""PRAGMA foreign_key_list('"", table, ""');""))
+  if(nrow(fks) > 0) {
+    data.frame(
+      FromTable = table,
+      FromColumn = fks$from,
+      ToTable = fks$table,
+      ToColumn = fks$to
+    )
+  }
+})
+relations <- do.call(rbind, relations[!sapply(relations, is.null)])
+writeLines(paste0(
+  ""digraph ER {\n"",
+  ""  node [shape=box];\n"",
+  paste(""  \"""", tables, """;\n"", sep = """", collapse = """"),
+  ""\n"",
+  paste(""  \"""", relations$FromTable, """\" -> \"""", relations$ToTable, """\" [label=\""", relations$FromColumn, "" -> "", relations$ToColumn, ""\"];\n"", sep = """", collapse = """"),
+  ""\n}""
+), file.path($output_dir, 'er_diagram.dot'))","Generates an Entity-Relationship diagram in DOT format","$connection, $output_dir",Database Documentation,2025-04-16,Claude,Active

@@ -1,0 +1,33 @@
+Example ID,Entity ID,Location,Options,Implementation Content,Description,Status
+EX001,D00_01_00,update_scripts,automated_execution=TRUE,"INITIALIZE IN UPDATE_MODE
+CONNECT TO APP_DATA
+
+IMPLEMENT TABLE CREATION
+  $connection = app_data
+  $table_name = df_customer_profile
+  $column_definitions = list(...)
+  $primary_key = c(""customer_id"", ""platform_id"")
+  $indexes = list(list(columns = ""platform_id""))","Implementation of customer profile table creation",Implemented
+EX002,D00_02_P00,update_scripts,automated_execution=TRUE,"INITIALIZE IN UPDATE_MODE
+CONNECT TO APP_DATA
+
+IMPLEMENT TABLE CREATION
+  $connection = app_data
+  $table_name = df_dna_by_customer
+  $column_definitions = list(...)
+  $primary_key = c(""customer_id"", ""platform_id"")
+  $indexes = list(list(columns = ""platform_id""))","Implementation of DNA by customer table creation",Implemented
+EX003,S01_01_00,update_scripts,automated_execution=FALSE,"INITIALIZE_SYNTAX
+  $libraries = library(dplyr)
+  library(tidyr)
+  library(DBI)
+  library(duckdb)
+  $environment_setup = options(stringsAsFactors = FALSE)
+  options(scipen = 999)
+  DATA_PATH <- file.path(""data"", ""processed"")
+
+# Data processing code here...
+
+DEINITIALIZE_SYNTAX
+  $close_connections = if(exists(""con"") && inherits(con, ""DBIConnection"")) dbDisconnect(con)
+  $reset_environment = rm(list = setdiff(ls(), c(""results"")))","Example of initialization and deinitialization syntax templates",Example

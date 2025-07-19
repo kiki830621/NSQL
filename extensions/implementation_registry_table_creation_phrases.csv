@@ -1,0 +1,17 @@
+Phrase ID,Directive,Context,Implementation Code,Description,Parameters,Extension,Added Date,Added By,Status
+TBL001,CREATE,TABLE,"create_table_query <- paste0('CREATE TABLE ', $table_name, ' (
+  ', paste($column_definitions, collapse=',
+  '), '
+);')
+dbExecute($connection, create_table_query)","Creates a new table with the specified columns","$connection, $table_name, $column_definitions",Table Creation,2025-04-16,Claude,Active
+TBL002,CREATE,TEMPORARY TABLE,"create_temp_table_query <- paste0('CREATE TEMPORARY TABLE ', $table_name, ' (
+  ', paste($column_definitions, collapse=',
+  '), '
+);')
+dbExecute($connection, create_temp_table_query)","Creates a temporary table that exists only for the current session","$connection, $table_name, $column_definitions",Table Creation,2025-04-16,Claude,Active
+TBL003,CREATE,INDEX,"create_index_query <- paste0('CREATE ', if($unique) 'UNIQUE ' else '', 'INDEX ', $index_name, ' ON ', $table_name, '(', paste($columns, collapse=', '), ');')
+dbExecute($connection, create_index_query)","Creates an index on specified columns","$connection, $table_name, $columns, $index_name, $unique",Table Creation,2025-04-16,Claude,Active
+TBL004,ADD,COLUMN,"alter_table_query <- paste0('ALTER TABLE ', $table_name, ' ADD COLUMN ', $column_definition, ';')
+dbExecute($connection, alter_table_query)","Adds a new column to an existing table","$connection, $table_name, $column_definition",Table Creation,2025-04-16,Claude,Active
+TBL005,ALTER,TABLE,"alter_table_query <- paste0('ALTER TABLE ', $table_name, ' ', $alteration, ';')
+dbExecute($connection, alter_table_query)","Alters an existing table structure","$connection, $table_name, $alteration",Table Creation,2025-04-16,Claude,Active
