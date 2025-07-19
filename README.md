@@ -25,8 +25,25 @@ This distinction ensures clarity in documentation and prevents confusion when di
 
 The 16_NSQL_Language directory is the authoritative source for NSQL definition, implementation, and usage guidelines. MP24 in the 00_principles directory provides a high-level overview but refers to this directory for complete details.
 
+## 🔄 AI Workflows
+
+### 06_workflows - NSQL Workflows
+
+**WF003: NSQL Query Translation**
+- **Purpose**: Translate natural language queries to SQL using NSQL framework
+- **Use case**: When users need to convert natural language descriptions to executable SQL
+- **Key features**: Pattern recognition, validation, testing
+
+**WF004: NSQL Extension Development** 
+- **Purpose**: Develop and integrate new NSQL language extensions
+- **Use case**: When adding domain-specific functionality to NSQL
+- **Key features**: Syntax definition, function implementation, integration testing
+
+When working with NSQL, refer to these workflow files for step-by-step guidance on common tasks.
+
 ## Directory Contents
 
+- **06_workflows/**: AI-executable workflows for NSQL operations
 - **dictionary.yaml**: NSQL dictionary containing terms, functions, and translations
 - **grammar.ebnf**: Formal grammar for NSQL in Extended Backus-Naur Form
 - **default_rules.md**: Default interpretation rules for NSQL statements
