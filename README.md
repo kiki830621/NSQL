@@ -23,7 +23,7 @@ This distinction ensures clarity in documentation and prevents confusion when di
 
 ## Overview
 
-The 16_NSQL_Language directory is the authoritative source for NSQL definition, implementation, and usage guidelines. MP24 in the 00_principles directory provides a high-level overview but refers to this directory for complete details.
+This directory (nsql/) is the authoritative source for NSQL definition, implementation, and usage guidelines. It is distributed as an independent subrepo alongside global_scripts. MP24 in the 00_principles directory provides a high-level overview but refers to this directory for complete details.
 
 ## 🔄 AI Workflows
 

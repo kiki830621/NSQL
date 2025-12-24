@@ -29,8 +29,7 @@
 parse_implementation <- function(nsql_text, registry_path = NULL) {
   # Default registry path if not provided
   if (is.null(registry_path)) {
-    script_path <- normalizePath(file.path(getwd(), "update_scripts", "global_scripts", 
-                                         "16_NSQL_Language", "extensions"))
+    script_path <- normalizePath(file.path(getwd(), "scripts", "nsql", "extensions"))
     registry_path <- file.path(script_path, "implementation_phrase_registry.xlsx")
   }
   

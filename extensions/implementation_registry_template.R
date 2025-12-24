@@ -359,7 +359,7 @@ intro_style <- createStyle(wrapText = TRUE)
 addStyle(wb, "Introduction", intro_style, rows = 1, cols = 1, gridExpand = TRUE)
 
 # Save the workbook
-registry_path <- "/Users/che/Library/CloudStorage/Dropbox/precision_marketing/precision_marketing_MAMBA/precision_marketing_app/update_scripts/global_scripts/16_NSQL_Language/extensions/implementation_phrase_registry.xlsx"
+registry_path <- file.path(getwd(), "scripts", "nsql", "extensions", "implementation_phrase_registry.xlsx")
 saveWorkbook(wb, registry_path, overwrite = TRUE)
 
 cat("Comprehensive implementation phrase registry created at:", registry_path, "\n")

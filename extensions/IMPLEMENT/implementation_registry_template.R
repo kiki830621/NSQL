@@ -104,7 +104,7 @@ addStyle(wb, "Implementation Phrases", style, rows = 2:(nrow(example_phrases) + 
 addStyle(wb, "Implementation Examples", style, rows = 2:(nrow(example_implementations) + 1), cols = 5, gridExpand = TRUE)
 
 # Save the workbook
-registry_path <- "/Users/che/Library/CloudStorage/Dropbox/precision_marketing/precision_marketing_MAMBA/precision_marketing_app/update_scripts/global_scripts/16_NSQL_Language/extensions/IMPLEMENT/implementation_phrase_registry.xlsx"
+registry_path <- file.path(getwd(), "scripts", "nsql", "extensions", "IMPLEMENT", "implementation_phrase_registry.xlsx")
 saveWorkbook(wb, registry_path, overwrite = TRUE)
 
 cat("Implementation phrase registry template created at:", registry_path, "\n")
