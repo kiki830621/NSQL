@@ -1,10 +1,10 @@
 # NSQL Confirmation Protocol
-# Version: 3.0.0
+# Version: 3.1.0
 # Purpose: AI-to-Human confirmation format for eliminating ambiguity
 # Date: 2025-12-24
 
 meta:
-  version: "3.0.0"
+  version: "3.1.0"
   name: "NSQL Confirmation Protocol"
   description: |
     NSQL is not an input language for humans to learn.
@@ -332,8 +332,76 @@ dictionary_usage:
     - Apply default definitions
     - Suggest operationalizations
 
+# Schema Integration
+schema_integration:
+  description: |
+    NSQL confirmation protocol requires schema awareness to:
+    - Use correct table and field names
+    - Validate field existence before confirmation
+    - Show available fields for user reference
+
+    IMPORTANT: NSQL itself does not contain schema definitions.
+    Each project should specify schema location in its own configuration
+    (e.g., CLAUDE.md or project config).
+
+  requirements:
+    - table_names: "Available tables and their aliases"
+    - field_names: "Field names, types, and aliases per table"
+    - relationships: "Table relationships for join operations"
+    - aggregation_mapping: "Common terms to aggregation functions"
+
+  workflow:
+    - step: 1
+      action: "Load schema from project-specified location"
+      note: "Location defined in project configuration, not NSQL"
+
+    - step: 2
+      action: "Map user terminology to tables/fields"
+      note: "Use aliases from schema to resolve user terms"
+
+    - step: 3
+      action: "Validate field existence"
+      note: "Ensure all fields in confirmation actually exist"
+
+    - step: 4
+      action: "Include field hints in confirmation"
+      note: "Show available fields when helpful"
+
+  schema_requirements:
+    description: |
+      A valid schema source should provide:
+      - tables: List of available tables with descriptions
+      - fields: For each table, list of fields with types and aliases
+      - relationships: Foreign key relationships between tables
+      - aggregation_mapping: Common business terms to aggregation operations
+
+  example_with_schema:
+    description: "Example of schema-aware confirmation"
+    user_input: "找評分最高的產品"
+    confirmation: |
+      根據 reviews 表，我理解您要的是：
+
+      reviews
+        -> group(product_id)
+        -> aggregate(avg_rating = mean(rating))
+        -> sort(avg_rating desc)
+        -> limit({N})
+
+      可用欄位：review_id, product_id, rating, review_date, review_text
+      （product_id 對應您說的「產品」）
+
+      這樣對嗎？
+
 # Version History
 changelog:
+  - version: "3.1.0"
+    date: "2025-12-24"
+    changes:
+      - "Added schema_integration section for schema-aware confirmations"
+      - "Schema integration is generic - no project-specific paths"
+      - "Each project specifies schema location in own configuration"
+      - "Added example of schema-aware confirmation"
+
   - version: "3.0.0"
     date: "2025-12-24"
     changes:
