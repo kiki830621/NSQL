@@ -1,14 +1,34 @@
-/* 
+/*
  * NSQL Grammar in Extended Backus-Naur Form (EBNF)
  * Implements MP24: Natural SQL Language
- * Version: 1.0.0
- * Date: 2025-04-04
+ * Version: 2.0.0
+ * Date: 2025-12-24
+ *
+ * CONFIRMATION PROTOCOL FORMATS (protocol.yaml v3.0):
+ *
+ * 1. PIPELINE FORMAT (DEFAULT) - ArrowStatement
+ *    - Most precise, explicit operation order
+ *    - Example: Orders -> filter(x) -> group(y) -> aggregate(z)
+ *    - Use for: All data queries, multi-step transformations
+ *
+ * 2. SQL-LIKE FORMAT (ALTERNATIVE) - TransformStatement
+ *    - Familiar to SQL users, but implicit operation order
+ *    - Example: transform Orders to Result as sum(x) grouped by y where z
+ *    - Use for: Users who prefer SQL style
+ *
+ * 3. NATURAL LANGUAGE - NaturalLanguageStatement
+ *    - NOTE: This is USER INPUT format, NOT a confirmation format
+ *    - AI parses this and confirms using Pipeline or SQL-like format
+ *    - Example: "show revenue by region"
  */
 
 /* Top-level NSQL statement */
 NSQLStatement ::= TransformStatement | ArrowStatement | NaturalLanguageStatement
 
-/* Transform-To Pattern */
+/* Transform-To Pattern (SQL-LIKE FORMAT - Alternative for confirmations)
+ * Use when user explicitly prefers SQL style.
+ * Note: Operation order is implicit (WHERE before GROUP BY assumed).
+ */
 TransformStatement ::= 'transform' Source 'to' Target 'as' Operations [GroupClause] [FilterClause] [OrderClause] [LimitClause]
 
 Source ::= Identifier
@@ -34,7 +54,12 @@ SortItem ::= Expression ['asc' | 'desc']
 
 LimitClause ::= 'limit' Number
 
-/* Arrow-Operator Pattern */
+/* Arrow-Operator Pattern (PIPELINE FORMAT - DEFAULT for confirmations)
+ * This is the PRIMARY confirmation format because:
+ * - Operation order is explicit and visible
+ * - Each step is atomic and verifiable
+ * - No hidden assumptions about execution sequence
+ */
 ArrowStatement ::= Source {'->' PipelineOperation}
 
 PipelineOperation ::= 'filter' '(' Conditions ')'
@@ -55,7 +80,11 @@ SortSpecification ::= Expression [',' 'direction' '=' ('asc' | 'desc')]
 Parameters ::= Parameter {',' Parameter}
 Parameter ::= [Identifier '='] Expression
 
-/* Natural Language Patterns */
+/* Natural Language Patterns (USER INPUT - NOT a confirmation format)
+ * These patterns help AI parse user intent.
+ * AI should NEVER use these formats for confirmation.
+ * Instead, AI confirms using Pipeline or SQL-like format.
+ */
 NaturalLanguageStatement ::= ImperativeQuery | CalculationQuery | ComparativeQuery | RankingQuery
 
 ImperativeQuery ::= 'show' Expression 'by' Expression
