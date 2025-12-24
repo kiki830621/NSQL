@@ -1,4 +1,16 @@
-# R60: UI Component Effect Propagation
+---
+id: "NSQL_R05"
+title: "UI Component Effect Propagation"
+type: "rule"
+date_created: "2025-04-03"
+date_modified: "2025-12-24"
+author: "Claude"
+previous_id: "R60"
+---
+
+# NSQL_R05: UI Component Effect Propagation
+
+> **Note**: This rule was previously R60 in the MAMBA principles system.
 
 ## Definition
 In a UI component hierarchy, effects propagate downward from parent to child components. When a property affects a container component, it may affect any of its child components. This propagation creates a cascade of effects through the UI tree structure.

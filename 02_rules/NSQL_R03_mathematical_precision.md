@@ -1,4 +1,16 @@
-# R23: Mathematical Precision Priority
+---
+id: "NSQL_R03"
+title: "Mathematical Precision Priority"
+type: "rule"
+date_created: "2025-04-03"
+date_modified: "2025-12-24"
+author: "Claude"
+previous_id: "R23"
+---
+
+# NSQL_R03: Mathematical Precision Priority
+
+> **Note**: This rule was previously R23 in the MAMBA principles system.
 
 ## Definition
 When multiple terminology options exist in NSQL, prefer the more mathematically precise term that unambiguously represents the underlying concept. Mathematical formalism takes precedence over natural language convenience when clarity is at stake.

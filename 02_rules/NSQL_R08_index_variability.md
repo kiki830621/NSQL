@@ -1,4 +1,16 @@
-# R63: Index Variability Theory
+---
+id: "NSQL_R08"
+title: "Index Variability Theory"
+type: "rule"
+date_created: "2025-04-03"
+date_modified: "2025-12-24"
+author: "Claude"
+previous_id: "R63"
+---
+
+# NSQL_R08: Index Variability Theory
+
+> **Note**: This rule was previously R63 in the MAMBA principles system.
 
 ## Definition
 Index Variability Theory is a formal system for classifying and reasoning about how values change across different dimensions using precise index notation. Each value is explicitly indexed by its variability dimensions, allowing for rigorous analysis of value persistence, scope, and changeability.

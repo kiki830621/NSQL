@@ -38,7 +38,7 @@ Validation can be performed at different levels:
 
 ## Interactive Disambiguation
 
-As defined in R22, validators support interactive disambiguation:
+As defined in NSQL_R02 (Interactive Update Rule), validators support interactive disambiguation:
 
 ```r
 disambiguate_nsql <- function(nsql_statement, options = list()) {

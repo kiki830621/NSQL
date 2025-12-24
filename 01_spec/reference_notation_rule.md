@@ -110,6 +110,6 @@ This standardized notation provides several benefits:
 
 ## Related Rules
 
-- MP24: Natural SQL Language
-- R21: NSQL Dictionary Rule
-- R22: NSQL Interactive Update Rule
+- MP083: Natural SQL Language
+- NSQL_R01: NSQL Dictionary Rule (was R21)
+- NSQL_R02: NSQL Interactive Update Rule (was R22)

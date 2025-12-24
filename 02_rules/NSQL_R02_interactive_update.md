@@ -1,18 +1,21 @@
 ---
-id: "R22"
+id: "NSQL_R02"
 title: "NSQL Interactive Update Rule"
 type: "rule"
 date_created: "2025-04-03"
-date_modified: "2025-04-03"
+date_modified: "2025-12-24"
 author: "Claude"
+previous_id: "R22"
 implements:
   - "MP24": "Natural SQL Language"
 related_to:
-  - "R21": "NSQL Dictionary Rule"
+  - "NSQL_R01": "NSQL Dictionary Rule"
   - "P13": "Language Standard Adherence Principle"
 ---
 
-# NSQL Interactive Update Rule
+# NSQL_R02: NSQL Interactive Update Rule
+
+> **Note**: This rule was previously R22 in the MAMBA principles system.
 
 ## Core Requirement
 

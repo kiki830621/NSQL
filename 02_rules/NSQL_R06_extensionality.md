@@ -1,4 +1,16 @@
-# R61: NSQL Extensionality Principle
+---
+id: "NSQL_R06"
+title: "NSQL Extensionality Principle"
+type: "rule"
+date_created: "2025-04-03"
+date_modified: "2025-12-24"
+author: "Claude"
+previous_id: "R61"
+---
+
+# NSQL_R06: NSQL Extensionality Principle
+
+> **Note**: This rule was previously R61 in the MAMBA principles system.
 
 ## Definition
 In NSQL, entities are determined by their elements, behaviors, or outputs. Two entities are considered equal if and only if they contain the same elements, exhibit identical behavior under all conditions, or produce the same outputs for all possible inputs.

@@ -2,113 +2,143 @@
 
 This directory contains the complete specification and implementation components of the Natural SQL Language (NSQL). NSQL serves as the standard language for data transformation operations in the precision marketing system.
 
-## Terminology Conventions
+> **Note**: This is an independent subrepo per MP122 Quad-Track Architecture.
 
-When working with NSQL and discussing code implementation, follow these important terminology distinctions:
+## Directory Structure
+
+```
+nsql/
+├── README.md                 # This file
+├── nsql.R                    # Main entry point
+├── .gitrepo                  # Subrepo configuration
+│
+├── 01_spec/                  # Language Specification
+│   ├── grammar.ebnf          # Formal grammar (EBNF)
+│   ├── dictionary.yaml       # Terms, functions, translations
+│   ├── default_rules.md      # Default interpretation rules
+│   ├── reference_resolution_rule.md
+│   ├── natural_language_rule.md
+│   ├── language_usage_principle.md
+│   ├── reference_notation_rule.md
+│   ├── nsql_set_theory_pragmatics.md
+│   ├── modal_pragmatics_principle.md
+│   └── multi_representation_principle.md
+│
+├── 02_rules/                 # NSQL Rules (NSQL_R01-R08)
+│   ├── NSQL_R01_dictionary.md           # (was R21)
+│   ├── NSQL_R02_interactive_update.md   # (was R22)
+│   ├── NSQL_R03_mathematical_precision.md # (was R23)
+│   ├── NSQL_R04_component_effect.md     # (was R59)
+│   ├── NSQL_R05_ui_effect.md            # (was R60)
+│   ├── NSQL_R06_extensionality.md       # (was R61)
+│   ├── NSQL_R07_similarity.md           # (was R62)
+│   ├── NSQL_R08_index_variability.md    # (was R63)
+│   └── RSQL_P01_explicit_evaluation.md  # RSQL principle
+│
+├── 03_extensions/            # Language Extensions
+│   ├── README.md
+│   ├── graph_representation/ # Graph theory extensions
+│   ├── documentation_syntax/ # LaTeX/Markdown documentation
+│   ├── specialized/          # Domain-specific extensions
+│   ├── temporal_logic/       # Time-based operations
+│   └── IMPLEMENT/           # Implementation patterns
+│
+├── 04_impl/                  # Implementation Components
+│   ├── parsers/              # NSQL parsers
+│   ├── translators/          # SQL/dplyr translators
+│   ├── validators/           # Validation tools
+│   ├── sc_nsql_translate.R
+│   ├── sc_nsql_parse.R
+│   ├── sc_nsql_execute.R
+│   ├── sc_nsql_validate.R
+│   └── sc_nsql_dictionary.R
+│
+├── 05_examples/              # Usage Examples
+│   ├── arrow_pattern.nsql
+│   ├── transform_pattern.nsql
+│   ├── natural_language_pattern.nsql
+│   └── ...
+│
+├── 06_workflows/             # AI Workflows
+│   ├── WF003_nsql_query_translation.md
+│   └── WF004_nsql_extension_development.md
+│
+├── 07_docs/                  # Documentation
+│   ├── integrated_guide.md   # Complete framework guide
+│   └── question_sets.yaml    # Disambiguation questions
+│
+└── 99_records/               # Change History
+    └── dot_notation_addition.md
+```
+
+## Terminology Conventions
 
 ### File Name vs. Object Name
 
 Always distinguish between these two concepts:
 
-- **File Name**: The name of a file containing code definitions (e.g., `fn_detect_advanced_metrics_availability.R`)
-- **Object Name**: The name of the actual code element defined within that file (e.g., `detect_advanced_metrics_availability`)
+- **File Name**: The name of a file containing code definitions (e.g., `fn_transform_data.R`)
+- **Object Name**: The name of the actual code element defined within that file (e.g., `transform_data`)
 
-### Implementation Pattern 
+### Implementation Pattern
 
 For R functions:
 - Function file names MUST use the `fn_` prefix (e.g., `fn_transform_data.R`)
 - Function object names defined inside those files MUST NOT use the `fn_` prefix (e.g., `transform_data`)
 
-This distinction ensures clarity in documentation and prevents confusion when discussing code implementation details.
-
-## Overview
-
-This directory (nsql/) is the authoritative source for NSQL definition, implementation, and usage guidelines. It is distributed as an independent subrepo alongside global_scripts. MP24 in the 00_principles directory provides a high-level overview but refers to this directory for complete details.
-
-## 🔄 AI Workflows
-
-### 06_workflows - NSQL Workflows
-
-**WF003: NSQL Query Translation**
-- **Purpose**: Translate natural language queries to SQL using NSQL framework
-- **Use case**: When users need to convert natural language descriptions to executable SQL
-- **Key features**: Pattern recognition, validation, testing
-
-**WF004: NSQL Extension Development** 
-- **Purpose**: Develop and integrate new NSQL language extensions
-- **Use case**: When adding domain-specific functionality to NSQL
-- **Key features**: Syntax definition, function implementation, integration testing
-
-When working with NSQL, refer to these workflow files for step-by-step guidance on common tasks.
-
-## Directory Contents
-
-- **06_workflows/**: AI-executable workflows for NSQL operations
-- **dictionary.yaml**: NSQL dictionary containing terms, functions, and translations
-- **grammar.ebnf**: Formal grammar for NSQL in Extended Backus-Naur Form
-- **default_rules.md**: Default interpretation rules for NSQL statements
-- **reference_resolution_rule.md**: Rules for resolving ambiguous references
-- **natural_language_rule.md**: Rules for using accessible language in user questions
-- **language_usage_principle.md**: Principles for context-based terminology selection
-- **question_sets.yaml**: Standard questions for disambiguating NSQL statements
-- **integrated_nsql_guide.md**: Guide to the integrated NSQL framework with all extensions
-- **parsers/**: Implementation of NSQL parsers for different target languages
-- **translators/**: Implementation of NSQL translators to SQL, dplyr, etc.
-- **examples/**: Example NSQL statements and their translations
-- **validators/**: Validation tools for NSQL statements
-- **extensions/**: Domain-specific extensions to NSQL
-  - **graph_representation/**: Graph theory extensions for component relationships
-  - **documentation_syntax/**: LaTeX and Markdown-inspired documentation structure
-  - **specialized/**: Specialized NSQL (SNSQL) extensions for specific use cases
-    - **principle_based_revision.md**: SNSQL for revising components based on principles
-- **records/**: Change records for NSQL language evolution
-
 ## Usage
 
-NSQL can be used either directly through the defined parsers and translators or through the interactive disambiguation process defined in R22.
+NSQL can be used either directly through the defined parsers and translators or through the interactive disambiguation process defined in NSQL_R02.
 
 For translation:
-```
+```r
 nsql_translate("show sales by region", target="sql")
 ```
 
 For validation:
-```
+```r
 nsql_validate("transform Sales to SummaryReport as sum(revenue) as total_revenue grouped by region")
 ```
 
-## Directory Organization
+## Rule Numbering Migration
 
-The NSQL implementation is organized into:
+As of 2025-12-24, NSQL uses its own independent numbering system:
 
-- **meta_principles/**: Core meta-principles defining NSQL (including MP24)
-- **rules/**: Implementation rules (R21, R22, R23, R59, R60, R61, R62, R63) for NSQL
-- **examples/**: Example statements in various NSQL patterns
-- **parsers/**, **translators/**, **validators/**: Implementation components
-- Core definition files: grammar.ebnf, dictionary.yaml, etc.
+| New ID | Previous ID | Description |
+|--------|-------------|-------------|
+| NSQL_R01 | R21 | NSQL Dictionary Rule |
+| NSQL_R02 | R22 | Interactive Update Rule |
+| NSQL_R03 | R23 | Mathematical Precision |
+| NSQL_R04 | R59 | Component Effect Propagation |
+| NSQL_R05 | R60 | UI Effect Propagation |
+| NSQL_R06 | R61 | Extensionality Principle |
+| NSQL_R07 | R62 | Similarity Principle |
+| NSQL_R08 | R63 | Index Variability Theory |
 
-## Related Meta-Principles and Rules
+## 🔄 AI Workflows
 
-- **MP24**: Natural SQL Language - Defines the core language (also in meta_principles/)
-- **MP25**: AI Communication Meta-Language - How to indicate NSQL in communications
-- **MP26**: R Statistical Query Language - RSQL, which complements NSQL
-- **MP27**: Integrated Natural SQL Language - Comprehensive integration of all NSQL components
-- **MP28**: NSQL Set Theory Foundations - Mathematical foundations using set theory
-- **MP41**: Configuration-Driven UI Composition - UI as a function of configuration
-- **MP52**: Unidirectional Data Flow - Formalized in NSQL graph notations
-- **MP56**: Connected Component Principle - Implemented through NSQL graph theory extension
-- **MP59**: App Dynamics - Documented using NSQL state machine notation
-- **R21**: NSQL Dictionary Rule - Dictionary structure and update process (also in rules/)
-- **R22**: NSQL Interactive Update Rule - Process for analyzing and adding patterns (also in rules/)
-- **R23**: Mathematical Precision - Ensures mathematical rigor in NSQL expressions
-- **R59**: Component Effect Propagation Rule - How effects propagate through component hierarchies
-- **R60**: UI Component Effect Propagation - Specific rules for UI component effect cascades
-- **R61**: NSQL Extensionality Principle - Entities are determined by their elements or behavior
-- **R62**: NSQL Similarity Principle - Processes with similar outputs for same inputs are similar
-- **R63**: Index Variability Theory - Formalization of how values vary across dimensions
-- **P079**: State Management - Formalized using NSQL reactive patterns
-- **P090**: Documentation Standards - Implemented through NSQL documentation syntax
+### WF003: NSQL Query Translation
+- **Purpose**: Translate natural language queries to SQL using NSQL framework
+- **Use case**: When users need to convert natural language descriptions to executable SQL
+- **Key features**: Pattern recognition, validation, testing
+
+### WF004: NSQL Extension Development
+- **Purpose**: Develop and integrate new NSQL language extensions
+- **Use case**: When adding domain-specific functionality to NSQL
+- **Key features**: Syntax definition, function implementation, integration testing
+
+## Related Meta-Principles
+
+See `00_principles/docs/en/part1_principles/CH00_fundamental_principles/06_languages/` for:
+- **MP083**: Natural SQL Language (core concept)
+- **MP087**: NSQL Detailed Specification
+- **MP088**: Graph Theory in NSQL
+- **MP089**: NSQL Set Theory Foundations
+- **MP090**: Radical Translation in NSQL
 
 ## Implementation Status
 
-This is the active, authoritative implementation of the NSQL specification. The MP24 document in 00_principles provides a high-level overview but refers to this directory for complete details.
+This is the active, authoritative implementation of the NSQL specification. The MP083 document in 00_principles provides a high-level overview but refers to this directory for complete details.
+
+---
+*Last updated: 2025-12-24*

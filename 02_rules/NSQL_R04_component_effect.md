@@ -1,4 +1,16 @@
-# R59: Component Effect Propagation Rule
+---
+id: "NSQL_R04"
+title: "Component Effect Propagation Rule"
+type: "rule"
+date_created: "2025-04-03"
+date_modified: "2025-12-24"
+author: "Claude"
+previous_id: "R59"
+---
+
+# NSQL_R04: Component Effect Propagation Rule
+
+> **Note**: This rule was previously R59 in the MAMBA principles system.
 
 ## Definition
 In a component hierarchy, if component A affects component B, then A may affect any subcomponent of B. Formally: if B is a function of A, then any component of B may also be a function of A, with effect propagation flowing downward through the component hierarchy.

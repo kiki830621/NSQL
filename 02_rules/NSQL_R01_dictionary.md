@@ -1,10 +1,11 @@
 ---
-id: "R21"
+id: "NSQL_R01"
 title: "NSQL Dictionary Rule"
 type: "rule"
 date_created: "2025-04-03"
-date_modified: "2025-04-03"
+date_modified: "2025-12-24"
 author: "Claude"
+previous_id: "R21"
 implements:
   - "MP24": "Natural SQL Language"
 related_to:
@@ -12,7 +13,9 @@ related_to:
   - "MP23": "Documentation Language Preferences"
 ---
 
-# NSQL Dictionary Rule
+# NSQL_R01: NSQL Dictionary Rule
+
+> **Note**: This rule was previously R21 in the MAMBA principles system.
 
 ## Core Requirement
 

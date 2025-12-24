@@ -1,4 +1,16 @@
-# R62: NSQL Similarity Principle
+---
+id: "NSQL_R07"
+title: "NSQL Similarity Principle"
+type: "rule"
+date_created: "2025-04-03"
+date_modified: "2025-12-24"
+author: "Claude"
+previous_id: "R62"
+---
+
+# NSQL_R07: NSQL Similarity Principle
+
+> **Note**: This rule was previously R62 in the MAMBA principles system.
 
 ## Definition
 The similarity between two processes or components is proportional to the similarity of their outputs when provided with identical inputs. Processes that consistently produce similar outputs for the same inputs are themselves similar, with the degree of similarity being measurable and quantifiable.

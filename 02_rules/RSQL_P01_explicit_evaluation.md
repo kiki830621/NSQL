@@ -1,3 +1,12 @@
+---
+id: "RSQL_P01"
+title: "Explicit Evaluation Preference"
+type: "principle"
+date_created: "2025-04-03"
+date_modified: "2025-12-24"
+author: "Claude"
+---
+
 # RSQL_P01: Explicit Evaluation Preference
 
 ## Pragmatic Rule
