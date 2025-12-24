@@ -55,6 +55,13 @@ where rfm_r >= 4 and rfm_f >= 4 and rfm_m >= 4
 
 **AI**: [執行查詢]
 
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| **[Concept Paper](docs/concept.md)** | Theoretical foundations and design rationale |
+| **[Implementation Guide](docs/guide.md)** | Practical guide for integrating NSQL in your AI system |
+
 ## Directory Structure
 
 ```
@@ -63,10 +70,16 @@ nsql/
 ├── protocol.yaml       # Confirmation protocol specification
 ├── dictionary.yaml     # Terminology definitions
 ├── grammar.ebnf        # Formal grammar (reference only)
+│
+├── docs/               # Documentation
+│   ├── concept.md      # Concept paper (whitepaper)
+│   └── guide.md        # Implementation guide
+│
 ├── examples/           # Dialogue examples
 │   ├── query_confirmation.md
 │   ├── disambiguation_flow.md
 │   └── operation_confirmation.md
+│
 └── 99_archive/         # Historical specifications
 ```
 
@@ -76,6 +89,7 @@ nsql/
 |------|---------|
 | `protocol.yaml` | Defines confirmation formats, triggers, and workflow |
 | `dictionary.yaml` | Business terms, time references, aggregation functions |
+| `docs/` | Concept paper and implementation guide |
 | `examples/` | Real dialogue examples showing the protocol in action |
 
 ## Key Principles
