@@ -1,57 +1,106 @@
-# Natural SQL Language (NSQL)
+# NSQL: Human-AI Confirmation Protocol
 
-A conceptual framework for natural language to SQL translation.
+A structured format for AI to confirm understanding of human requests, eliminating ambiguity through dialogue.
 
-> **Status**: Simplified (2025-12-24). Most content archived for reference.
+> **Key Insight**: NSQL is not a language humans need to learn. It's a format AI uses to show what it understood, so humans can confirm or correct.
+
+## How It Works
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     Confirmation Loop                           │
+│                                                                 │
+│   Human                        AI                               │
+│     │                           │                               │
+│     │  "看上個月各區銷售"        │                               │
+│     │ ──────────────────────>   │                               │
+│     │                           │  Parse & identify ambiguity   │
+│     │                           │                               │
+│     │   [NSQL Confirmation]     │                               │
+│     │ <──────────────────────   │                               │
+│     │                           │                               │
+│     │  "對" / "不對，改成..."    │                               │
+│     │ ──────────────────────>   │                               │
+│     │                           │                               │
+│     │   [Execute or Iterate]    │                               │
+│     │ <──────────────────────   │                               │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Example
+
+**User**: 找出高價值客戶
+
+**AI**: 「高價值客戶」有幾種定義：
+
+1. RFM 分數 ≥ 4（推薦）
+2. 年消費 > $10,000
+3. Top 10% 消費者
+
+您想用哪一個？
+
+**User**: 1
+
+**AI**: 我理解您要的是：
+
+```
+transform Customers to HighValueCustomers
+as customer_id, customer_name, rfm_score
+where rfm_r >= 4 and rfm_f >= 4 and rfm_m >= 4
+```
+
+這樣對嗎？
+
+**User**: 對
+
+**AI**: [執行查詢]
 
 ## Directory Structure
 
 ```
 nsql/
 ├── README.md           # This file
-├── nsql.R              # Main entry point
-├── dictionary.yaml     # Core terminology and mappings
-├── grammar.ebnf        # Formal grammar specification
-├── examples/           # Usage examples
-└── 99_archive/         # Archived specifications and rules
+├── protocol.yaml       # Confirmation protocol specification
+├── dictionary.yaml     # Terminology definitions
+├── grammar.ebnf        # Formal grammar (reference only)
+├── examples/           # Dialogue examples
+│   ├── query_confirmation.md
+│   ├── disambiguation_flow.md
+│   └── operation_confirmation.md
+└── 99_archive/         # Historical specifications
 ```
 
 ## Core Files
 
 | File | Purpose |
 |------|---------|
-| `dictionary.yaml` | Terminology mappings between natural language and SQL |
-| `grammar.ebnf` | Formal grammar definition in EBNF notation |
-| `examples/` | Example NSQL patterns and translations |
+| `protocol.yaml` | Defines confirmation formats, triggers, and workflow |
+| `dictionary.yaml` | Business terms, time references, aggregation functions |
+| `examples/` | Real dialogue examples showing the protocol in action |
 
-## Usage
+## Key Principles
 
-Basic concept (implementation incomplete):
+1. **Read-Only for Humans** - Users confirm/correct, they don't write NSQL
+2. **Structured but Readable** - Clear enough for non-technical users
+3. **Dynamic Confirmation** - Achieve consensus through dialogue
+4. **Eliminate Ambiguity** - Clarify before execute, never guess
 
-```r
-source("nsql.R")
+## When to Use NSQL Confirmation
 
-# Conceptual translation
-nsql_translate("show sales by region", target = "sql")
-```
+- Data queries with potential ambiguity
+- Bulk operations that need user approval
+- Business term interpretations
+- Time range clarifications
+- Any request where assumptions could lead to wrong results
 
-## Archive Contents
+## Benefits
 
-The `99_archive/` directory preserves the full historical specification:
-
-- `01_spec/` - Language specification documents
-- `02_rules/` - NSQL rules (NSQL_R01-R08, formerly R21-R23, R59-R63)
-- `03_extensions/` - Language extensions (graph, temporal, etc.)
-- `04_impl/` - Implementation components (parsers, translators)
-- `06_workflows/` - AI workflow definitions
-- `07_docs/` - Additional documentation
-- `99_records/` - Change history
-
-## Historical Context
-
-NSQL was designed as a formal framework for translating natural language data queries to SQL. With advances in LLM capabilities, direct natural language processing has become more practical than maintaining a formal intermediate language.
-
-The core concepts (dictionary, grammar) are preserved for reference, while the detailed specifications are archived.
+| vs Pure Natural Language | vs Technical Query Languages |
+|-------------------------|------------------------------|
+| No hidden assumptions | No learning curve for users |
+| Explicit confirmation | Readable by non-programmers |
+| Traceable understanding | Still unambiguous |
 
 ---
-*Last updated: 2025-12-24*
+
+*Version 2.0.0 | Repositioned as Confirmation Protocol | 2025-12-24*

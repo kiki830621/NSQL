@@ -1,0 +1,213 @@
+# NSQL Confirmation Protocol
+# Version: 2.0.0
+# Purpose: AI-to-Human confirmation format for eliminating ambiguity
+# Date: 2025-12-24
+
+meta:
+  version: "2.0.0"
+  name: "NSQL Confirmation Protocol"
+  description: |
+    NSQL is not an input language for humans to learn.
+    It is a structured output format for AI to confirm understanding.
+
+    Human speaks naturally -> AI confirms in NSQL -> Human approves/corrects
+
+# Core Principles
+principles:
+  - id: "P1"
+    name: "Read-Only for Humans"
+    description: "Humans only need to READ and understand, not WRITE"
+    rationale: "Eliminates learning curve while maintaining precision"
+
+  - id: "P2"
+    name: "Structured but Readable"
+    description: "Formal enough to be unambiguous, natural enough for non-technical users"
+    rationale: "Bridges the gap between precision and accessibility"
+
+  - id: "P3"
+    name: "Dynamic Confirmation Loop"
+    description: "Achieve consensus through dialogue, not perfect first-attempt parsing"
+    rationale: "Acknowledges that human language is inherently ambiguous"
+
+# Confirmation Formats
+confirmation_formats:
+
+  query:
+    description: "For data queries and analysis requests"
+    template: |
+      我理解您要的是：
+
+      transform {source} to {target}
+      as {operations}
+      [grouped by {dimensions}]
+      [where {conditions}]
+      [ordered by {sort}]
+      [limit {n}]
+
+      這樣對嗎？
+
+    components:
+      source: "Source table or dataset"
+      target: "Result name (can be implicit)"
+      operations: "Calculations or selections"
+      dimensions: "Grouping fields (optional)"
+      conditions: "Filter conditions (optional)"
+      sort: "Sort specification (optional)"
+      n: "Row limit (optional)"
+
+  operation:
+    description: "For data modification or system operations"
+    template: |
+      我將執行以下操作：
+
+      {action} on {target}
+      with {parameters}
+
+      確認執行嗎？
+
+    components:
+      action: "The operation to perform (create, update, delete, etc.)"
+      target: "The target of the operation"
+      parameters: "Parameters for the operation"
+
+  comparison:
+    description: "For comparative analysis requests"
+    template: |
+      我理解您要比較：
+
+      compare {dimension_a} vs {dimension_b}
+      measure {metrics}
+      [for {scope}]
+
+      這樣對嗎？
+
+    components:
+      dimension_a: "First comparison dimension"
+      dimension_b: "Second comparison dimension"
+      metrics: "Metrics to compare"
+      scope: "Scope or filter (optional)"
+
+# Disambiguation Triggers
+disambiguation_triggers:
+
+  - id: "D1"
+    trigger: "Vague Time References"
+    examples:
+      - "上個月"
+      - "最近"
+      - "去年"
+      - "lately"
+      - "recently"
+    resolution: |
+      「{term}」可以有不同解釋：
+      1. {option_1} (例：2024-11-01 ~ 2024-11-30)
+      2. {option_2} (例：過去30天)
+      3. {option_3} (例：上一個完整月份)
+
+      您指的是哪一個？
+
+  - id: "D2"
+    trigger: "Undefined Business Terms"
+    examples:
+      - "高價值客戶"
+      - "活躍用戶"
+      - "忠誠客戶"
+      - "high-value customer"
+      - "active user"
+    resolution: |
+      「{term}」在系統中有幾種定義方式：
+      1. {definition_1}（推薦）
+      2. {definition_2}
+      3. 自訂條件
+
+      您想用哪一個？
+
+  - id: "D3"
+    trigger: "Polysemous Terms"
+    examples:
+      - "銷售（金額 vs 數量）"
+      - "客戶（帳號 vs 自然人）"
+      - "訂單（筆數 vs 金額）"
+    resolution: |
+      「{term}」可能指：
+      1. {meaning_1}
+      2. {meaning_2}
+
+      請確認您要的是？
+
+  - id: "D4"
+    trigger: "Implicit Aggregation"
+    examples:
+      - "各區的銷售"
+      - "每月營收"
+    resolution: |
+      您要的「{metric}」是：
+      1. 總和 (sum)
+      2. 平均 (average)
+      3. 計數 (count)
+      4. 其他
+
+      請確認？
+
+# Response Types
+response_types:
+
+  confirmed:
+    description: "User confirms AI understanding is correct"
+    triggers: ["對", "是", "正確", "yes", "ok", "確認"]
+    action: "Proceed with execution"
+
+  modified:
+    description: "User provides correction"
+    triggers: ["不對，應該是...", "改成...", "其實我要的是..."]
+    action: "Update confirmation and re-present"
+
+  rejected:
+    description: "User rejects interpretation entirely"
+    triggers: ["不是", "錯了", "完全不對"]
+    action: "Ask for clarification and restart"
+
+  clarified:
+    description: "User provides additional context"
+    triggers: ["還要加上...", "另外...", "補充..."]
+    action: "Incorporate new information and update"
+
+# Workflow
+workflow:
+  steps:
+    - step: 1
+      name: "Receive Natural Language"
+      description: "User expresses intent in natural language"
+
+    - step: 2
+      name: "Parse and Identify Ambiguities"
+      description: "AI analyzes for vagueness and ambiguity"
+
+    - step: 3
+      name: "Disambiguate if Needed"
+      description: "Present options for ambiguous terms"
+
+    - step: 4
+      name: "Present Confirmation"
+      description: "Show structured NSQL confirmation"
+
+    - step: 5
+      name: "Await Response"
+      description: "User confirms, modifies, or rejects"
+
+    - step: 6
+      name: "Execute or Iterate"
+      description: "Execute if confirmed, iterate if not"
+
+# Integration with Dictionary
+dictionary_usage:
+  description: |
+    The dictionary.yaml file provides:
+    - Standard terminology mappings
+    - Business term definitions
+    - Aggregate function names
+
+    AI should use dictionary entries to:
+    - Recognize synonyms
+    - Apply default definitions
+    - Suggest operationalizations
