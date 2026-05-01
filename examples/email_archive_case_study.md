@@ -172,6 +172,53 @@ held back, so the user could verify the catch.
 
 ---
 
+## What NSQL deliberately does *not* solve (out of scope, by design)
+
+These came up in conversation as "things NSQL didn't give us" but on
+closer look they aren't NSQL's job. Listing them so future adopters
+don't mis-attribute them as protocol limitations:
+
+- **Entity / contact resolution** — "who counts as 陳老師's lab?" is an
+  ontology question (LDAP, CardDAV, address book, prior thread
+  participants). NSQL's Phase 1 disambiguation surfaces the *ambiguity*;
+  resolving the candidates is the host application's responsibility.
+- **Domain-specific search depth** — bare-subject thread expansion vs
+  full `In-Reply-To` chain traversal is an engineering choice in the
+  mail plugin, not something NSQL specifies. Different domains will pick
+  different traversal strategies.
+- **Round-trip overhead on truly precise operations** — yes, `get_email`
+  by Message-ID under NSQL would be pure overhead. But this is *handled*
+  by the protocol: `confirmation-triggers.md`-style skip conditions
+  (precise identifier, single read-only op, `--no-confirm`) are
+  first-class in the spec. Adopters are expected to define their skip
+  list, not bypass the protocol entirely.
+
+## Real protocol-level limitations (worth knowing about)
+
+These *are* NSQL's responsibility and adopters should plan for them:
+
+- **Pipeline syntax assumes some structural literacy** — `Mail ->
+  filter(...) -> sort(...)` reads cleanly to anyone who has seen a
+  shell pipe or SQL. For a fully non-technical audience the host may
+  need a second-render path (natural-language paraphrase of the
+  pipeline). NSQL doesn't currently spec one.
+- **False-positive flagging is host-defined** — NSQL says Phase 2
+  preview should flag false positives; it does not provide a generic
+  detection algorithm. Each domain re-invents it (mail uses sibling
+  activity / CC pollution / subject collision; SQL uses cardinality
+  estimates; bulk file ops would use path-pattern collision; etc.).
+  Worth surveying these implementations to extract patterns that could
+  be lifted up into the spec.
+- **No built-in enforcement** — this is the biggest one. NSQL is a
+  *protocol*, not a *runtime*. If the host LLM doesn't follow it, NSQL
+  itself has no recourse. v2.9.0's `TaskCreate`-per-phase pattern
+  (borrowed from IDD) is the host-side commitment device that makes
+  enforcement observable. NSQL the spec might want to acknowledge this
+  and recommend a host-level enforcement mechanism rather than rely on
+  "the LLM will follow the spec because it's documented".
+
+---
+
 ## Lessons for NSQL adopters
 
 ### 1. NSQL ports outside SQL cleanly when the operation has the same shape
