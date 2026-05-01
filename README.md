@@ -78,7 +78,8 @@ nsql/
 ├── examples/           # Dialogue examples
 │   ├── query_confirmation.md
 │   ├── disambiguation_flow.md
-│   └── operation_confirmation.md
+│   ├── operation_confirmation.md
+│   └── email_archive_case_study.md   # Real-world adoption + spec→enforce gap
 │
 └── 99_archive/         # Historical specifications
 ```
