@@ -180,7 +180,7 @@ This principle ensures **no irreversible action occurs based on a misunderstandi
 
 ## 4. The Function/Argument Model
 
-> Added 2026-05-19. This section defines NSQL's **target architecture**. The repository is being restructured to match it — a host-agnostic `core/` and per-host `extensions/` (relational SQL-query is the first, shipped as `extensions/relational/`). Where this section uses the present tense, read it as the architecture NSQL is converging on, not a claim about every current artifact.
+> Added 2026-05-19. This section is NSQL's architecture. The repository is structured to match it — a host-agnostic `core/` and per-host `extensions/` (relational SQL-query is the canonical one, `extensions/relational/`).
 >
 > **On the name.** NSQL ⊃ SQL. NSQL is the general confirmation protocol; relational SQL-query is its *canonical special case* — the one the protocol is named after, shipped as `extensions/relational/`. The `SQL` in "NSQL" names a real, present component, not a historical origin.
 

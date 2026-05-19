@@ -27,7 +27,7 @@
  */
 
 /* Top-level NSQL statement */
-NSQLStatement ::= TransformStatement | ArrowStatement | NaturalLanguageStatement
+NSQLStatement ::= TransformStatement | ArrowStatement | OperationStatement | NaturalLanguageStatement
 
 /* Transform-To Pattern (SQL-LIKE FORMAT - Alternative for confirmations)
  * Use when user explicitly prefers SQL style.
@@ -83,6 +83,17 @@ SortSpecification ::= Expression [',' 'direction' '=' ('asc' | 'desc')]
 
 Parameters ::= Parameter {',' Parameter}
 Parameter ::= [Identifier '='] Expression
+
+/* Operation Statement (OPERATION FORMAT - data modification)
+ * The relational rendering of the core `operation` confirmation shape.
+ * A mutating statement; the confirmation MUST carry an explicit, visible
+ * affected Scope.
+ */
+OperationStatement ::= ActionVerb 'on' Target ['with' AssignmentList] ['affecting' Scope]
+ActionVerb         ::= 'CREATE' | 'UPDATE' | 'DELETE' | 'INSERT'
+AssignmentList     ::= Assignment {',' Assignment}
+Assignment         ::= Identifier '=' Expression
+Scope              ::= 'where' Conditions | Number ['records']
 
 /* Natural Language Patterns (USER INPUT - NOT a confirmation format)
  * These patterns help AI parse user intent.

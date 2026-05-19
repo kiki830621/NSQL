@@ -76,6 +76,8 @@ confirmation_format_shapes:
 
       {function} {arguments}
 
+      [Not operationalized — you confirm this yourself: {residue}]
+
       Is this correct?
 
   operation:
@@ -88,6 +90,7 @@ confirmation_format_shapes:
 
       This will affect approximately {scope}.
       [Warning: this action cannot be undone.]
+      [Not operationalized — you confirm this yourself: {residue}]
 
       Proceed?
     rule: "Any irreversible or bulk-affecting operation MUST use this shape."
@@ -102,6 +105,19 @@ confirmation_format_shapes:
       3. {option_3}
 
       Which do you mean?
+
+  residue:
+    purpose: |
+      The part of a request that could NOT be operationalized — typically its
+      *purpose*, or the context it should be read within (its horizon). See
+      docs/concept.md §4.6.
+    rule: |
+      NSQL renders the operationalizable part of a request as function +
+      arguments. When a request carries intent the rendering cannot capture,
+      the confirmation MUST append the bracketed residue line shown in the
+      `read` and `operation` shapes above — omitted only when there is no
+      residue. Silently dropping residue is a violation: an honest reduction
+      is not the same as a false claim of completeness.
 
 # Disambiguation Taxonomy
 # The KINDS of unclarity. An extension supplies concrete triggers under each.
@@ -148,6 +164,16 @@ workflow:
     - {step: 5, name: "Await",        description: "User confirms, modifies, or rejects."}
     - {step: 6, name: "Execute",      description: "Execute if confirmed; otherwise iterate."}
 
+# Enforcement
+# NSQL is a protocol, not a runtime — it cannot enforce itself. A host LLM
+# can skip phases under conversational load. See ../extensions/README.md.
+enforcement:
+  statement: "NSQL specifies the protocol; enforcing it is the host's responsibility."
+  recommendation: |
+    An adopting host SHOULD bind each workflow phase to a commitment device
+    that makes a skipped phase observable (e.g. one task-tracker entry per
+    phase). Demonstrated in examples/email_archive_case_study.md.
+
 # Extensions
 # An extension specializes this core for one host. See ../extensions/README.md
 # for the contract. The relational SQL-query extension is the canonical one.
@@ -162,3 +188,4 @@ changelog:
       - "Re-scope: NSQL split into a host-agnostic core + per-host extensions."
       - "SQL-query relocated to extensions/relational/ as the canonical special case."
       - "Added the function/argument model and the disambiguation taxonomy."
+      - "Added the residue shape (§4.6) and the enforcement statement."
