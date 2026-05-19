@@ -8,7 +8,9 @@ A practical guide for implementing the NSQL Confirmation Protocol in AI systems.
 
 ### What is NSQL?
 
-NSQL (Natural SQL) is a **confirmation protocol** for human-AI communication. Instead of requiring users to write queries, AI presents structured confirmations that users verify before execution.
+NSQL is a **host-agnostic confirmation protocol** for human-AI communication. Instead of executing immediately, the AI presents a structured confirmation — its understanding rendered as a *function* (the operation) over *arguments* (what it acts on) — that the user verifies before anything runs.
+
+NSQL is organized as a host-agnostic `core/` plus per-host `extensions/`. The examples in this guide use the **relational extension** (`extensions/relational/`) — SQL-style data queries, the canonical special case the protocol is named after (NSQL ⊃ SQL). The same confirmation workflow applies to every host.
 
 ### 5-Minute Example
 
@@ -351,9 +353,9 @@ Users may say:
 
 ## Configuration Files
 
-### dictionary.yaml
+### Dictionary (`extensions/relational/dictionary.yaml`)
 
-Define business terms and their interpretations:
+Each extension carries its host vocabulary. The relational extension defines business terms and their interpretations:
 
 ```yaml
 business_terms:
@@ -367,9 +369,9 @@ business_terms:
         condition: "annual_revenue > 10000"
 ```
 
-### protocol.yaml
+### Protocol (`core/protocol.yaml` + `extensions/relational/protocol.yaml`)
 
-Define confirmation formats and triggers:
+The host-agnostic `core/protocol.yaml` defines the confirmation-format shapes and the disambiguation taxonomy; `extensions/relational/protocol.yaml` defines the concrete relational formats and triggers:
 
 ```yaml
 confirmation_formats:

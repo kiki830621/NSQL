@@ -1,40 +1,35 @@
-# NSQL Confirmation Protocol
-# Version: 3.1.0
-# Purpose: AI-to-Human confirmation format for eliminating ambiguity
-# Date: 2025-12-24
+# NSQL Extension: relational — SQL-Style Data Queries
+# Version: 4.0.0  (see ../../VERSION)
+# Date: 2026-05-19
+#
+# The CANONICAL host extension — SQL-style data queries. NSQL ⊃ SQL: this is
+# the special case the protocol is named after.
+#
+# This file specializes the host-agnostic core (../../core/protocol.yaml) for
+# the relational host: concrete confirmation formats, concrete disambiguation
+# triggers, and schema integration. Principles, response types, the workflow,
+# and the function/argument model live in the core.
 
 meta:
-  version: "3.1.0"
-  name: "NSQL Confirmation Protocol"
+  version: "4.0.0"
+  name: "NSQL Relational Extension"
+  host: "relational data store (SQL / dplyr / pandas / any tabular source)"
+  extends: "../../core/protocol.yaml"
   description: |
-    NSQL is not an input language for humans to learn.
-    It is a structured output format for AI to confirm understanding.
-
-    Human speaks naturally -> AI confirms in NSQL -> Human approves/corrects
+    Renders the core confirmation-format shapes for the relational host:
+      core `read`           -> pipeline format (default) / sql_like format
+      core `operation`      -> operation format (UPDATE / DELETE / INSERT ...)
+      core `disambiguation` -> triggers D1–D5 below
 
   design_decisions:
-    - "Natural language is USER INPUT, not a confirmation format"
-    - "Pipeline is the DEFAULT format (most precise, least ambiguous)"
-    - "SQL-like is an ALTERNATIVE for users who prefer SQL style"
+    - "Natural language is USER INPUT, never a confirmation format"
+    - "Pipeline is the DEFAULT read format (most precise, least ambiguous)"
+    - "SQL-like is an ALTERNATIVE read format for users who prefer SQL style"
 
-# Core Principles
-principles:
-  - id: "P1"
-    name: "Read-Only for Humans"
-    description: "Humans only need to READ and understand, not WRITE"
-    rationale: "Eliminates learning curve while maintaining precision"
+# Principles, response types, workflow, and the function/argument model:
+# see ../../core/protocol.yaml — they are host-agnostic and not repeated here.
 
-  - id: "P2"
-    name: "Explicit Operation Order"
-    description: "Every operation and its sequence must be visible"
-    rationale: "Prevents hidden assumptions about execution order"
-
-  - id: "P3"
-    name: "Dynamic Confirmation Loop"
-    description: "Achieve consensus through dialogue, not perfect first-attempt parsing"
-    rationale: "Acknowledges that human language is inherently ambiguous"
-
-# Confirmation Formats
+# Confirmation Formats  (concrete renderings of the core `read` / `operation` shapes)
 confirmation_formats:
 
   # ============================================================
@@ -195,11 +190,15 @@ format_selection:
     - "System modifications"
     - "Irreversible actions"
 
-# Disambiguation Triggers
+# Disambiguation Triggers  (concrete instances of the core disambiguation taxonomy)
+#   function_ambiguity  -> D5
+#   argument_vagueness  -> D1, D2, D4
+#   argument_ambiguity  -> D3
 disambiguation_triggers:
 
   - id: "D1"
     trigger: "Vague Time References"
+    taxonomy: "argument_vagueness"
     examples:
       - "上個月"
       - "最近"
@@ -216,6 +215,7 @@ disambiguation_triggers:
 
   - id: "D2"
     trigger: "Undefined Business Terms"
+    taxonomy: "argument_vagueness"
     examples:
       - "高價值客戶"
       - "活躍用戶"
@@ -232,6 +232,7 @@ disambiguation_triggers:
 
   - id: "D3"
     trigger: "Polysemous Terms"
+    taxonomy: "argument_ambiguity"
     examples:
       - "銷售（金額 vs 數量）"
       - "客戶（帳號 vs 自然人）"
@@ -245,6 +246,7 @@ disambiguation_triggers:
 
   - id: "D4"
     trigger: "Implicit Aggregation"
+    taxonomy: "argument_vagueness"
     examples:
       - "各區的銷售"
       - "每月營收"
@@ -259,6 +261,7 @@ disambiguation_triggers:
 
   - id: "D5"
     trigger: "Operation Order Ambiguity"
+    taxonomy: "function_ambiguity"
     examples:
       - "篩選後加總" vs "加總後篩選"
       - "先分組再過濾" vs "先過濾再分組"
@@ -269,60 +272,12 @@ disambiguation_triggers:
 
       您要哪一個？
 
-# Response Types
-response_types:
-
-  confirmed:
-    description: "User confirms AI understanding is correct"
-    triggers: ["對", "是", "正確", "yes", "ok", "確認"]
-    action: "Proceed with execution"
-
-  modified:
-    description: "User provides correction"
-    triggers: ["不對，應該是...", "改成...", "其實我要的是..."]
-    action: "Update confirmation and re-present"
-
-  rejected:
-    description: "User rejects interpretation entirely"
-    triggers: ["不是", "錯了", "完全不對"]
-    action: "Ask for clarification and restart"
-
-  clarified:
-    description: "User provides additional context"
-    triggers: ["還要加上...", "另外...", "補充..."]
-    action: "Incorporate new information and update"
-
-# Workflow
-workflow:
-  steps:
-    - step: 1
-      name: "Receive Natural Language"
-      description: "User expresses intent in natural language"
-
-    - step: 2
-      name: "Parse and Identify Ambiguities"
-      description: "AI analyzes for vagueness and ambiguity"
-
-    - step: 3
-      name: "Disambiguate if Needed"
-      description: "Present options for ambiguous terms"
-
-    - step: 4
-      name: "Present Confirmation"
-      description: "Show structured NSQL confirmation (Pipeline by default)"
-
-    - step: 5
-      name: "Await Response"
-      description: "User confirms, modifies, or rejects"
-
-    - step: 6
-      name: "Execute or Iterate"
-      description: "Execute if confirmed, iterate if not"
+# Response types and workflow: see ../../core/protocol.yaml.
 
 # Integration with Dictionary
 dictionary_usage:
   description: |
-    The dictionary.yaml file provides:
+    The ./dictionary.yaml file provides:
     - Standard terminology mappings
     - Business term definitions
     - Aggregate function names
@@ -335,7 +290,7 @@ dictionary_usage:
 # Schema Integration
 schema_integration:
   description: |
-    NSQL confirmation protocol requires schema awareness to:
+    The relational extension requires schema awareness to:
     - Use correct table and field names
     - Validate field existence before confirmation
     - Show available fields for user reference
@@ -394,6 +349,13 @@ schema_integration:
 
 # Version History
 changelog:
+  - version: "4.0.0"
+    date: "2026-05-19"
+    changes:
+      - "Re-scope: relocated from root protocol.yaml into extensions/relational/ as the canonical host extension."
+      - "Host-agnostic sections (principles, response_types, workflow) moved to ../../core/protocol.yaml."
+      - "Triggers D1–D5 tagged with their core disambiguation-taxonomy category."
+
   - version: "3.1.0"
     date: "2025-12-24"
     changes:

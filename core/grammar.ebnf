@@ -1,0 +1,52 @@
+/*
+ * NSQL Core Grammar — the host-agnostic confirmation envelope
+ * Version: 4.0.0  (see ../VERSION)
+ * Date: 2026-05-19
+ *
+ * Defines the ABSTRACT structure every NSQL confirmation shares: a function
+ * applied to arguments. It is deliberately small — the closed set of
+ * operations and their concrete syntax are defined per host extension.
+ * The canonical host grammar: ../extensions/relational/grammar.ebnf
+ *
+ * Normativity (docs/concept.md §4.5): this grammar is normative for the
+ * confirmation ENVELOPE; a host extension's grammar is normative for that
+ * host's OPERATIONS.
+ */
+
+/* A confirmation renders one request in one of three shapes. */
+Confirmation          ::= ReadConfirmation | OperationConfirmation | Disambiguation
+
+/* Read — a non-mutating request (query / retrieval / search). */
+ReadConfirmation      ::= Function ArgumentList
+
+/* Operation — a mutating request. Carries an explicit, visible scope. */
+OperationConfirmation ::= Action 'on' Target ['with' ParameterList] ['affecting' Scope]
+
+/* Disambiguation — a choice between interpretations. */
+Disambiguation        ::= Term 'could mean' OptionList
+OptionList            ::= Option {Option}
+Option                ::= Index InterpretationText ['(Recommended)']
+
+/* Function / Action — the OPERATION. Drawn from a CLOSED, host-specific set;
+ * the host extension's grammar enumerates the actual operation names. */
+Function              ::= OperationName
+Action                ::= OperationName
+OperationName         ::= /* host-defined — see the host extension's grammar */
+
+/* Arguments — the OPEN frontier, resolved by the confirmation loop. */
+ArgumentList          ::= Argument {Argument}
+Argument              ::= Referent | Condition | Modifier
+Referent              ::= /* a host entity, resolved from a human concept */
+Condition             ::= /* a constraint on referents */
+Modifier              ::= /* ordering, limit, scope, and similar qualifiers */
+
+Target                ::= Referent
+ParameterList         ::= Parameter {',' Parameter}
+Parameter             ::= /* host-defined */
+Scope                 ::= /* an explicit count or extent of what is affected */
+
+/* Lexical */
+Term                  ::= /* the natural-language fragment being disambiguated */
+Index                 ::= Digit {Digit} '.'
+InterpretationText    ::= /* free text describing one interpretation */
+Digit                 ::= '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'

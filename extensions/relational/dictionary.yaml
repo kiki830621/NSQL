@@ -1,11 +1,16 @@
-# NSQL Dictionary
-# Purpose: Terminology definitions for confirmation protocol
-# Version: 2.0.0
-# Date: 2025-12-24
+# NSQL Relational Extension — Dictionary
+# Purpose: Relational / business vocabulary for the confirmation protocol
+# Version: 4.0.0  (see ../../VERSION)
+# Date: 2026-05-19
+#
+# Vocabulary for the relational host: structural keywords, aggregate
+# functions, business terms, time references, query patterns. This artifact
+# is extension-scoped — the host-agnostic core has no domain vocabulary.
 
 meta:
-  version: "2.0.0"
-  purpose: "Define terms for human-AI confirmation, not code translation"
+  version: "4.0.0"
+  extends: "../../core/protocol.yaml"
+  purpose: "Define relational-host terms for human-AI confirmation, not code translation"
   note: |
     This dictionary helps AI understand user intent and present confirmations.
     Code generation is left to the AI's general capabilities.

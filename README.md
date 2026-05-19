@@ -1,33 +1,38 @@
 # NSQL: Human-AI Confirmation Protocol
 
-A structured format for AI to confirm understanding of human requests, eliminating ambiguity through dialogue.
+A structured format an AI uses to confirm its understanding of a request
+before acting — eliminating ambiguity through a short dialogue.
 
-> **Key Insight**: NSQL is not a language humans need to learn. It's a format AI uses to show what it understood, so humans can confirm or correct.
+> **Key insight**: NSQL is not a language humans need to learn. It is a format
+> the AI uses to show what it understood, so humans can confirm or correct
+> before anything runs.
+
+> **NSQL ⊃ SQL.** NSQL is a *host-agnostic* confirmation protocol. Relational
+> SQL-style data queries are its **canonical special case** — the one the
+> protocol is named after — shipped as `extensions/relational/`. The `SQL` in
+> the name points at a real component, not a limit on scope.
 
 ## How It Works
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Confirmation Loop                           │
-│                                                                 │
-│   Human                        AI                               │
-│     │                           │                               │
-│     │  "看上個月各區銷售"        │                               │
-│     │ ──────────────────────>   │                               │
-│     │                           │  Parse & identify ambiguity   │
-│     │                           │                               │
-│     │   [NSQL Confirmation]     │                               │
-│     │ <──────────────────────   │                               │
-│     │                           │                               │
-│     │  "對" / "不對，改成..."    │                               │
-│     │ ──────────────────────>   │                               │
-│     │                           │                               │
-│     │   [Execute or Iterate]    │                               │
-│     │ <──────────────────────   │                               │
+│                       Confirmation Loop                          │
+│   Human                          AI                              │
+│     │   natural-language request  │                              │
+│     │ ───────────────────────────>│  parse → function + arguments │
+│     │                             │  identify ambiguity           │
+│     │     structured confirmation │                              │
+│     │ <───────────────────────────│                              │
+│     │   "對" / "不對，改成..."      │                              │
+│     │ ───────────────────────────>│  execute or iterate           │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-## Example
+A request decomposes into a **function** (the operation) and its
+**arguments** (what it acts on). The AI renders that decomposition as a
+confirmation; the human confirms or corrects; only then does it run.
+
+## Example (relational host)
 
 **User**: 找出高價值客戶
 
@@ -44,78 +49,65 @@ A structured format for AI to confirm understanding of human requests, eliminati
 **AI**: 我理解您要的是：
 
 ```
-transform Customers to HighValueCustomers
-as customer_id, customer_name, rfm_score
-where rfm_r >= 4 and rfm_f >= 4 and rfm_m >= 4
+Customers
+  -> filter(rfm_r >= 4 AND rfm_f >= 4 AND rfm_m >= 4)
 ```
 
 這樣對嗎？
 
-**User**: 對
+**User**: 對 → [執行查詢]
 
-**AI**: [執行查詢]
+## Architecture
+
+NSQL is a **host-agnostic core** plus per-host **extensions**.
+
+```
+nsql/
+├── core/                   # the host-agnostic protocol
+│   ├── protocol.yaml        #   confirmation loop, format shapes,
+│   │                        #   disambiguation taxonomy, workflow
+│   └── grammar.ebnf         #   the confirmation envelope (function/argument)
+│
+├── extensions/             # per-host specializations
+│   └── relational/          # SQL-style data queries — the canonical case
+│       ├── protocol.yaml    #   pipeline / sql_like / operation formats
+│       ├── grammar.ebnf     #   relational grammar
+│       └── dictionary.yaml  #   relational + business vocabulary
+│
+├── docs/
+│   ├── concept.md           # whitepaper — §4 is the function/argument model
+│   └── guide.md             # implementation guide
+│
+├── examples/                # dialogue examples
+│   └── email_archive_case_study.md   # a non-relational adoption (Apple Mail)
+│
+├── VERSION                  # 4.0.0
+└── archive/                 # historical specifications
+```
 
 ## Documentation
 
 | Document | Description |
 |----------|-------------|
-| **[Concept Paper](docs/concept.md)** | Theoretical foundations and design rationale |
-| **[Implementation Guide](docs/guide.md)** | Practical guide for integrating NSQL in your AI system |
-
-## Directory Structure
-
-```
-nsql/
-├── README.md           # This file
-├── protocol.yaml       # Confirmation protocol specification
-├── dictionary.yaml     # Terminology definitions
-├── grammar.ebnf        # Formal grammar (reference only)
-│
-├── docs/               # Documentation
-│   ├── concept.md      # Concept paper (whitepaper)
-│   └── guide.md        # Implementation guide
-│
-├── examples/           # Dialogue examples
-│   ├── query_confirmation.md
-│   ├── disambiguation_flow.md
-│   ├── operation_confirmation.md
-│   └── email_archive_case_study.md   # Real-world adoption + spec→enforce gap
-│
-└── archive/            # Historical specifications
-```
-
-## Core Files
-
-| File | Purpose |
-|------|---------|
-| `protocol.yaml` | Defines confirmation formats, triggers, and workflow |
-| `dictionary.yaml` | Business terms, time references, aggregation functions |
-| `docs/` | Concept paper and implementation guide |
-| `examples/` | Real dialogue examples showing the protocol in action |
+| [Concept Paper](docs/concept.md) | Theory — incl. §4, the function/argument model |
+| [Implementation Guide](docs/guide.md) | How to adopt NSQL in an AI system |
+| [`core/protocol.yaml`](core/protocol.yaml) | The host-agnostic protocol |
+| [`extensions/relational/`](extensions/relational/) | The canonical SQL-query extension |
 
 ## Key Principles
 
-1. **Read-Only for Humans** - Users confirm/correct, they don't write NSQL
-2. **Structured but Readable** - Clear enough for non-technical users
-3. **Dynamic Confirmation** - Achieve consensus through dialogue
-4. **Eliminate Ambiguity** - Clarify before execute, never guess
+1. **Read-Only for Humans** — users confirm/correct, they don't write NSQL.
+2. **Explicit over Implicit** — every operation and assumption is visible.
+3. **Dynamic Confirmation Loop** — consensus is reached through dialogue.
+4. **Clarify before execute** — never guess.
 
-## When to Use NSQL Confirmation
+## When to Use NSQL
 
-- Data queries with potential ambiguity
-- Bulk operations that need user approval
-- Business term interpretations
-- Time range clarifications
-- Any request where assumptions could lead to wrong results
-
-## Benefits
-
-| vs Pure Natural Language | vs Technical Query Languages |
-|-------------------------|------------------------------|
-| No hidden assumptions | No learning curve for users |
-| Explicit confirmation | Readable by non-programmers |
-| Traceable understanding | Still unambiguous |
+The shape NSQL fits: a **vague natural-language request that triggers an
+operation with real consequences** — data queries, bulk updates, file or
+email operations, anything irreversible at scale. Skip it for precise,
+single-resource, read-only actions.
 
 ---
 
-*Version 2.0.0 | Repositioned as Confirmation Protocol | 2025-12-24*
+*NSQL v4.0.0 — host-agnostic confirmation protocol*

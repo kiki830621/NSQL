@@ -1,0 +1,164 @@
+# NSQL Core — Host-Agnostic Confirmation Protocol
+# Version: 4.0.0  (see ../VERSION)
+# Date: 2026-05-19
+#
+# The host-agnostic core of NSQL: the confirmation loop, the function/argument
+# model, the confirmation-format shapes, the disambiguation taxonomy, response
+# types, and the workflow — independent of any host system.
+#
+# Concrete operations, format templates, and vocabulary live in an extension
+# under ../extensions/ . The relational SQL-query extension is the canonical
+# one. See ../extensions/README.md for the extension contract.
+
+meta:
+  version: "4.0.0"
+  name: "NSQL Core Confirmation Protocol"
+  description: |
+    NSQL is not an input language for humans to learn. It is a structured
+    output format an AI uses to confirm its understanding of a request
+    before executing it.
+
+      Human speaks naturally
+        -> AI renders a structured confirmation (a function over arguments)
+        -> Human confirms or corrects
+        -> AI executes
+
+    NSQL is host-agnostic. SQL-query is one host (../extensions/relational/) —
+    the canonical special case the protocol is named after. NSQL contains SQL,
+    it is not a kind of SQL: NSQL ⊃ SQL.
+
+# Core Principles
+principles:
+  - id: "P1"
+    name: "Read-Only for Humans"
+    description: "Humans only READ and confirm a confirmation; they never write NSQL."
+    rationale: "Eliminates the learning curve while keeping precision."
+
+  - id: "P2"
+    name: "Explicit over Implicit"
+    description: "Every operation, argument, and assumption in a confirmation is visible."
+    rationale: "Hidden assumptions are exactly what the confirmation loop exists to surface."
+
+  - id: "P3"
+    name: "Dynamic Confirmation Loop"
+    description: "Consensus is reached through dialogue, not perfect first-attempt parsing."
+    rationale: "Natural language is inherently ambiguous; clarify before execute."
+
+# The Function/Argument Model
+# Full treatment: docs/concept.md §4.
+function_argument_model:
+  description: |
+    Every request decomposes into a FUNCTION (the operation) and its
+    ARGUMENTS (the entities it acts on). The two behave differently:
+
+      function — the operation. CLOSED per host (a host performs finitely
+                 many kinds of operation). Meaning pinned by a formal
+                 semantics (see semantics.md). Unclarity is always
+                 ambiguity — a pick from the host's finite operation set.
+
+      argument — the referent. OPEN — a human concept resolved into a
+                 machine value. Unclarity may be vagueness (no finite menu;
+                 forced explicit + negotiated) or ambiguity (discrete senses).
+  seam: |
+    The closed function core carries a formal semantics; the open argument
+    frontier is resolved by the confirmation loop. Function/argument is the
+    seam between them.
+
+# Confirmation Format Shapes
+# Abstract shapes. An extension renders each shape concretely for its host
+# (e.g. the relational extension renders `read` as a pipeline).
+confirmation_format_shapes:
+
+  read:
+    purpose: "Confirm a non-mutating request (a query / retrieval / search)."
+    shape: |
+      I understand you want:
+
+      {function} {arguments}
+
+      Is this correct?
+
+  operation:
+    purpose: "Confirm a mutating request (a side-effecting operation)."
+    shape: |
+      I will perform:
+
+      {action} on {target}
+      with {parameters}
+
+      This will affect approximately {scope}.
+      [Warning: this action cannot be undone.]
+
+      Proceed?
+    rule: "Any irreversible or bulk-affecting operation MUST use this shape."
+
+  disambiguation:
+    purpose: "Surface a choice when a function or argument is unclear."
+    shape: |
+      "{term}" could mean:
+
+      1. {option_1} (Recommended)
+      2. {option_2}
+      3. {option_3}
+
+      Which do you mean?
+
+# Disambiguation Taxonomy
+# The KINDS of unclarity. An extension supplies concrete triggers under each.
+disambiguation_taxonomy:
+
+  function_ambiguity:
+    description: "Which operation is meant. The host operation set is closed, so this always resolves to a pick from a finite menu."
+    resolution: "disambiguation shape — pick one."
+
+  argument_vagueness:
+    description: "What counts — a fuzzy-boundary term ('recent', 'high-value'). No finite menu exists."
+    resolution: "force an explicit value, then negotiate it."
+
+  argument_ambiguity:
+    description: "Which discrete sense of a referent ('sales' = revenue or quantity)."
+    resolution: "disambiguation shape — pick one."
+
+# Response Types
+response_types:
+  confirmed:
+    description: "User confirms the AI's understanding."
+    triggers: ["對", "是", "正確", "yes", "ok"]
+    action: "Proceed to execution."
+  modified:
+    description: "User provides a correction."
+    triggers: ["不對，改成…", "其實我要的是…"]
+    action: "Update the confirmation and re-present."
+  rejected:
+    description: "User rejects the interpretation entirely."
+    triggers: ["不是", "錯了", "完全不對"]
+    action: "Ask for clarification and restart."
+  clarified:
+    description: "User adds context."
+    triggers: ["還要加上…", "另外…"]
+    action: "Incorporate and re-present."
+
+# Workflow
+workflow:
+  steps:
+    - {step: 1, name: "Receive",      description: "User expresses intent in natural language."}
+    - {step: 2, name: "Parse",        description: "Identify the function and arguments; flag unclarity."}
+    - {step: 3, name: "Disambiguate", description: "If unclear, present options (per the taxonomy)."}
+    - {step: 4, name: "Confirm",      description: "Render the appropriate confirmation-format shape."}
+    - {step: 5, name: "Await",        description: "User confirms, modifies, or rejects."}
+    - {step: 6, name: "Execute",      description: "Execute if confirmed; otherwise iterate."}
+
+# Extensions
+# An extension specializes this core for one host. See ../extensions/README.md
+# for the contract. The relational SQL-query extension is the canonical one.
+extensions:
+  contract: "../extensions/README.md"
+  canonical: "relational"
+
+changelog:
+  - version: "4.0.0"
+    date: "2026-05-19"
+    changes:
+      - "Re-scope: NSQL split into a host-agnostic core + per-host extensions."
+      - "SQL-query relocated to extensions/relational/ as the canonical special case."
+      - "Added the function/argument model and the disambiguation taxonomy."
