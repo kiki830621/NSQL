@@ -263,8 +263,8 @@ disambiguation_triggers:
     trigger: "Operation Order Ambiguity"
     taxonomy: "function_ambiguity"
     examples:
-      - "篩選後加總" vs "加總後篩選"
-      - "先分組再過濾" vs "先過濾再分組"
+      - "篩選後加總 vs 加總後篩選"
+      - "先分組再過濾 vs 先過濾再分組"
     resolution: |
       操作順序會影響結果。請確認順序：
       1. 先 {op1} 再 {op2}（推薦）
