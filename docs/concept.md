@@ -1,7 +1,7 @@
 # NSQL: A Confirmation Protocol for Human-AI Communication
 
-> **Version**: 1.0 (Whitepaper)
-> **Date**: 2025-12-24
+> **Version**: 1.1 (Whitepaper)
+> **Date**: 2026-05-19 (§4 added)
 > **Status**: Draft
 
 ## Abstract
@@ -20,6 +20,15 @@ When humans communicate with AI systems for data queries or operations, two fund
 
 1. **Vagueness**: Terms with unclear boundaries (e.g., "recent", "high-value", "active")
 2. **Ambiguity**: Terms with multiple discrete meanings (e.g., "sales" could mean revenue or quantity)
+
+Vagueness and ambiguity describe the *kind* of unclarity. Orthogonal to it is the *location*: any misalignment sits in either the **function** (the operation requested) or the **argument** (the entity it acts on). Crossing the two axes:
+
+| | Function (the operation) | Argument (the referent) |
+|---|---|---|
+| **Vagueness** (fuzzy boundary) | "tidy up these emails" | "high-value customers" |
+| **Ambiguity** (discrete senses) | "handle this" — archive or delete? | "sales" — revenue or quantity? |
+
+The location axis tells the protocol *where* to seek confirmation. The two locations behave very differently — §4 develops this into NSQL's architecture.
 
 These challenges lead to a critical question: How can we ensure AI correctly understands human intent before taking action?
 
@@ -169,7 +178,64 @@ This principle ensures **no irreversible action occurs based on a misunderstandi
 
 ---
 
-## 4. Comparison with Alternatives
+## 4. The Function/Argument Model
+
+> Added 2026-05-19. This section refines the problem model of §1 into the architectural commitment NSQL is built on.
+
+### 4.1 Every request is a function over arguments
+
+A request to operate on a computer decomposes into a **function** — the operation to perform — and its **arguments** — the entities it acts on. *"Archive the marketing emails from last quarter"* is the function `archive` applied to the argument *the marketing emails from last quarter*.
+
+This is the Fregean decomposition (function + argument), not the classical subject/predicate one. The distinction is load-bearing: subject/predicate cannot express *multiple generality* ("every customer's largest order"); function/argument with quantifier scope can. NSQL's grammar is built on function/argument for this reason.
+
+### 4.2 The closed core and the open frontier
+
+Function and argument are not symmetric. They sit on opposite sides of a seam:
+
+| | **Function** (the operation) | **Argument** (the referent) |
+|---|---|---|
+| Domain | **Closed** — a computer performs finitely many kinds of operation | **Open** — human concepts, resolved into machine values |
+| Meaning (sense) | **Pinned** by a formal semantics | **Open** — varies with user, domain, and purpose |
+| Resolved by | formal semantics (§4.4) | the confirmation loop (§2) |
+| Termination | **Guaranteed** — a pick from a finite set | **Local only** — each turn closes; the sense space never does |
+
+The function side is closed because the set of operations a computer can perform is finite and enumerable. The argument side is open because "high-value customer" is not a thing inside the computer — it is a human concept that must be *negotiated* into one.
+
+This is why a formal semantics and the §2 confirmation loop coexist: **the closed core (operations) carries a formal semantics; the open frontier (arguments) is resolved by confirmation.** Function/argument is the seam between them.
+
+### 4.3 Vagueness and ambiguity across the seam
+
+§1.1 distinguished vagueness (fuzzy boundary) from ambiguity (discrete senses). The closed/open seam predicts where each lives:
+
+- **The closed operation domain acts as a vagueness→ambiguity converter.** A vague verb ("tidy up these emails") cannot stay vague: projected onto the finite operation set, it becomes a discrete choice ("archive? delete? sort?"). Function unclarity is therefore always *ambiguity-shaped* — resolved by a pick from a closed menu.
+- **The argument domain has no such converter.** "High-value" has no finite menu to collapse onto, so its vagueness *stays* vagueness — resolved not by a 1/2/3 pick but by forcing an explicit value and negotiating it.
+
+Consequently, **true (open) vagueness lives only in arguments.** Arguments may also carry ambiguity ("sales" = revenue or quantity, a discrete pick); functions, in practice, carry only ambiguity.
+
+### 4.4 Formal semantics by citation
+
+The function core can be given a formal semantics — but NSQL does not invent one. The operations it renders act on systems that already have precise semantics: relational algebra for queries, POSIX for files, defined operations for email. NSQL's semantics is a thin mapping from each NSQL construct to a host-system operation:
+
+```
+NSQL  transform X to Y where C   →  relational algebra
+NSQL  archive email E            →  the mail system's archive operation
+```
+
+NSQL does not define meaning; it *cites* it. This makes "a formal semantics for NSQL" a bounded mapping exercise rather than an open research effort.
+
+### 4.5 Versioned extension
+
+The operation set is closed *per version*, not closed forever. A new host system — a new file operation, a new tool — extends it. But the extension is deliberate and spec-bearing: a new operation is a new function symbol *plus* its cited semantics, in the manner of successive SQL standards. This is the role of `extensions/`: **versioned formal extension**, not the organic drift of natural language. The operation grammar (`grammar.ebnf`) is therefore normative — a complete specification of the operation core at each version, not a sketch.
+
+### 4.6 What NSQL bounds, and what it does not
+
+NSQL restricts its **rendering** domain to function/argument. It does **not** restrict its **input** domain — humans still speak naturally; that is the protocol's core promise (§2.1).
+
+The discipline is honesty about the gap. When part of a request cannot be operationalized — typically its *purpose*, the context within which it should be read (its **horizon**) — that residue must be **explicitly marked**, not silently dropped. A confirmation must distinguish what NSQL operationalized from what it could not, and is handing back to the human.
+
+---
+
+## 5. Comparison with Alternatives
 
 | Criterion | SQL | Natural Language | NSQL Protocol |
 |-----------|-----|------------------|---------------|
@@ -187,7 +253,7 @@ This principle ensures **no irreversible action occurs based on a misunderstandi
 
 ---
 
-## 5. Conclusion
+## 6. Conclusion
 
 NSQL represents a paradigm shift in human-AI communication: instead of forcing humans to speak the machine's language, we enable machines to show their understanding in a human-readable form. This confirmation protocol achieves:
 
@@ -205,6 +271,7 @@ The key innovation is recognizing that the bottleneck in human-AI communication 
 
 - Austin, J.L. (1962). *How to Do Things with Words*. Oxford University Press.
 - Clark, H.H. (1996). *Using Language*. Cambridge University Press.
+- Frege, G. (1879). *Begriffsschrift*. (Function/argument analysis; §4.1.)
 - Grice, H.P. (1975). Logic and Conversation. In *Syntax and Semantics*, Vol. 3.
 
 ---
