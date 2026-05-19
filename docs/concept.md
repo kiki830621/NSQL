@@ -1,7 +1,7 @@
 # NSQL: A Confirmation Protocol for Human-AI Communication
 
-> **Version**: 1.1 (Whitepaper)
-> **Date**: 2026-05-19 (§4 added)
+> **Version**: 1.2 (Whitepaper) — describes NSQL v4.0
+> **Date**: 2026-05-19 (§4 added; re-scope)
 > **Status**: Draft
 
 ## Abstract
@@ -180,7 +180,9 @@ This principle ensures **no irreversible action occurs based on a misunderstandi
 
 ## 4. The Function/Argument Model
 
-> Added 2026-05-19. This section refines the problem model of §1 into the architectural commitment NSQL is built on.
+> Added 2026-05-19. This section defines NSQL's **target architecture**. The repository is being restructured to match it — a host-agnostic `core/` and per-host `extensions/` (relational SQL-query is the first, shipped as `extensions/relational/`). Where this section uses the present tense, read it as the architecture NSQL is converging on, not a claim about every current artifact.
+>
+> **On the name.** NSQL ⊃ SQL. NSQL is the general confirmation protocol; relational SQL-query is its *canonical special case* — the one the protocol is named after, shipped as `extensions/relational/`. The `SQL` in "NSQL" names a real, present component, not a historical origin.
 
 ### 4.1 Every request is a function over arguments
 

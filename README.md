@@ -81,7 +81,7 @@ nsql/
 │   ├── operation_confirmation.md
 │   └── email_archive_case_study.md   # Real-world adoption + spec→enforce gap
 │
-└── 99_archive/         # Historical specifications
+└── archive/            # Historical specifications
 ```
 
 ## Core Files
